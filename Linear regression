@@ -1,0 +1,25 @@
+	
+library(Amelia)
+ library(caret)
+webphis_df <- read.csv ("C:/semester 2/Training DatasetV3.csv",, sep = ',', header = FALSE)
+head(webphis_df)
+set.seed(3033)
+intrain <- createDataPartition(y =webphis_df$V31, p= 0.7, list = FALSE)
+training <- webphis_df[intrain,]
+testing <- webphis_df[-intrain,]
+dim(training); dim(testing);
+training[["V31"]]= factor(training[["V31"]])
+model <- glm(V31~.,family=binomial(link='logit'),data=train)
+summary(model)
+anova(model, testing$V31)
+library(pscl)
+pR2(model)
+ fitted.results <- predict(model, newdata=testing ,type='response')
+fitted.results <- ifelse(fitted.results > 0.5,1,0)
+misClasificError <- mean(fitted.results != testing$V31)
+print(paste('Accuracy',1-misClasificError))
+ library(ROCR)
+p <- predict(model, newdata=testing ,type ="response")
+pr <- prediction(p, testing$V31)
+prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+plot(prf)
