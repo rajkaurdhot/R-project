@@ -1,0 +1,26 @@
+CLUSTERING
+install.packages("factoextra")
+install.packages("cluster")
+install.packages("magrittr")
+library("mclust")
+library(e1071)
+webphis_df <- read.csv ("C:/semester 2/Training DatasetV3.csv",, sep = ',', header = FALSE)
+head(webphis_df)
+set.seed(3033)
+intrain <- createDataPartition(y =webphis_df$V31, p= 0.7, list = FALSE)
+ training <- webphis_df[intrain,]
+ testing <- webphis_df[-intrain,]
+ dim(training); dim(testing);
+training[["V31"]]= factor(training[["V31"]])
+library(mclust)
+df <- scale(webphis_df[,-1])
+mc <- Mclust(df) 
+ summary(mc)
+mc$modelName 
+ mc$G
+head(mc$z, 30)
+head(mc$classification, 31)
+library(factoextra)
+fviz_mclust(mc, "BIC", palette = "jco")
+fviz_mclust(mc, "classification", geom = "point", pointsize = 1.5, palette = "jco")
+fviz_mclust(mc, "uncertainty", palette = "jco")
