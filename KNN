@@ -1,0 +1,17 @@
+
+library(caret)
+webphis_df <- read.csv ("C:/semester 2/Training DatasetV3.csv",, sep = ',', header = FALSE)
+head(webphis_df)
+set.seed(3033)
+intrain <- createDataPartition(y =webphis_df$V31, p= 0.7, list = FALSE)
+training <- webphis_df[intrain,]
+testing <- webphis_df[-intrain,]
+dim(training); dim(testing);
+training[["V31"]]= factor(training[["V31"]])
+set.seed(2)
+trctrl <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+knn<- train(V31~., data = training, method = "knn",trControl=trctrl,preProcess = c("center", "scale"),tuneLength = 10)
+
+test_pred <- predict(knn,newdata = testing, position = "1")
+ test_pred
+confusionMatrix(test_pred, testing$V31)
