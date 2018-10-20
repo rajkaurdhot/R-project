@@ -1,0 +1,23 @@
+ADABOOST
+library(adabag)
+library(rpart)
+library(mlbench)
+library(caret)
+webphis_df <- read.csv ("C:/semester 2/Training DatasetV3.csv",, sep = ',', header = FALSE)
+head(webphis_df)
+set.seed(3033)
+intrain <- createDataPartition(y =webphis_df$V31, p= 0.7, list = FALSE)
+training <- webphis_df[intrain,]
+testing <- webphis_df[-intrain,]
+dim(training); dim(testing);
+training[["V31"]]= factor(training[["V31"]])
+BC.rpart <- rpart(V31~., data= train, maxdepth=3)
+BC.rpart.pred <- predict(BC.rpart,newdata= testing , type= 'class')
+tb <-table(BC.rpart.pred, testing$V31)
+error.rpart <- 1-(sum(diag(tb))/sum(tb))
+tb
+error.rpart
+BC.adaboost <- boosting(V31~., data= train, mfinal=20, coeflearn="Freund",boos=FALSE , control=rpart.control(maxdepth=3))
+BC.adaboost.pred <- predict.boosting(BC.adaboost,newdata=testing, newmfinal=10)
+ BC.adaboost.pred$confusion
+BC.adaboost.pred$error
