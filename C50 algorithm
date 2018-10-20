@@ -1,0 +1,17 @@
+
+library(C50)
+library(gmodels)
+library(caret)
+webphis_df <- read.csv ("C:/semester 2/Training DatasetV3.csv",, sep = ',', header = FALSE)
+head(webphis_df)
+set.seed(3033)
+intrain <- createDataPartition(y =webphis_df$V31, p= 0.7, list = FALSE)
+training <- webphis_df[intrain,]
+testing <- webphis_df[-intrain,]
+dim(training); dim(testing);
+training[["V31"]] = factor(training[["V31"]], levels = c("0", "1"),labels = c("no", "yes"))
+table(training[["V31"]])
+model <- C5.0(training[-31], training[["V31"]])
+pred <- predict (model, testing)
+pred
+CrossTable(testing$V31, pred,  prop.chisq = FALSE, prop.c = FALSE, prop.r = FALSE, dnn = c('actual default', 'predicted default'))
