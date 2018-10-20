@@ -1,0 +1,16 @@
+library(caret)
+library(randomForest)
+webphis_df <- read.csv ("C:/semester 2/Training DatasetV3.csv",, sep = ',', header = FALSE)
+head(webphis_df)
+set.seed(3033)
+intrain <- createDataPartition(y =webphis_df$V31, p= 0.7, list = FALSE)
+training <- webphis_df[intrain,]
+testing <- webphis_df[-intrain,]
+dim(training); dim(testing);
+training[["V31"]]= factor(training[["V31"]])
+fit <- randomForest(V31~., data=train, method="class") 
+plot(fit)
+ pred <- predict(fit,newdata= test)
+varImpPlot(fit)
+plot(margin(fit,test$result))
+fit$importance
